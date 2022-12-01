@@ -1,10 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { tap } from 'rxjs';
+import { InputService } from './core/input/input.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+  template: `<router-outlet></router-outlet>`,
 })
-export class AppComponent {
-  title = 'aoc22';
+export class AppComponent implements OnInit {
+  constructor(
+    protected inputService: InputService,
+  ) {
+  }
+
+  public ngOnInit(): void {
+    this.inputService.get('01', '1').pipe(
+      tap(console.log),
+    ).subscribe();
+  }
 }

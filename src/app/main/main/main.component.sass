@@ -1,0 +1,65 @@
+@use "common"
+
+\:host
+  display: block
+  background: common.color('black', 'dark')
+  min-height: 100vh
+  overflow: hidden
+
+.main-wrapper
+  position: relative
+  margin: 0 auto
+  width: 1200px
+  min-height: 100vh
+  display: flex
+  justify-content: center
+  align-items: stretch
+  .side-label-title
+    display: block
+    position: absolute
+    top: 3rem
+    left: 1.5rem
+    padding: 1rem 2rem 2.5rem
+    background: common.color('green')
+    transform-origin: bottom right
+    transform: translate(-100%, -100%) rotate(-90deg)
+    +common.border-radius
+    +common.box-shadow
+    +common.transition(transform, left, background)
+    &:hover
+      left: 1rem
+      transform: translate(-100%, -100%) rotate(-88deg)
+      background: common.color('green', 'light')
+  .side-label-github,
+  .side-label-website
+    display: block
+    position: absolute
+    right: 1.5rem
+    padding: 1rem 2rem 2.5rem
+    transform-origin: bottom right
+    transform: rotate(90deg)
+    +common.border-radius
+    +common.box-shadow
+    +common.transition(transform, right, background)
+    &:hover
+      right: 1rem
+      transform: rotate(88deg)
+  .side-label-github
+    bottom: 2rem
+    background: common.color('black', 'lighter')
+    &:hover
+      background: common.color('black', 'lightest')
+  .side-label-website
+    bottom: 7rem
+    background: common.color('black', 'lighter')
+    &:hover
+      background: common.color('black', 'lightest')
+  .main
+    flex: 1
+    position: relative
+    background: common.color('black')
+    margin-top: 2rem
+    padding: 2rem
+    +common.border-radius
+    +common.box-shadow
+

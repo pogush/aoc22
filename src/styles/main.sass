@@ -1,1 +1,16 @@
 @use 'common'
+
+@import 'node_modules/modern-normalize/modern-normalize.css'
+@import "node_modules/css.gg/icons/all"
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;500&display=swap')
+
+body
+  background: common.color('black')
+  color: common.color('white')
+  font-family: 'DM Mono', monospace
+  +common.weight-base
+
+a
+  text-decoration: none
+  color: inherit

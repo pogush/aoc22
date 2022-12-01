@@ -1,0 +1,25 @@
+@use "variables"
+@use "colors"
+
+@function color($color, $variant: 'base')
+  $colorValue: map-get(colors.$palette, $color)
+  $variantValue: map-get(colors.$variant, $variant)
+  @return adjust-color($colorValue, $lightness: $variantValue)
+
+=box-shadow
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)
+
+=border-radius
+  border-radius: variables.$border-radius
+
+=transition($attributes...)
+  $transition: ()
+  @each $attribute in $attributes
+    $transition: append($transition, ($attribute variables.$transition-duration variables.$transition-easing), $separator: comma)
+  transition: #{$transition}
+
+=weight-base
+  font-weight: variables.$font-weight-base
+
+=weight-bold
+  font-weight: variables.$font-weight-bold
