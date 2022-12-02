@@ -75,10 +75,7 @@
                 }
               ],
               "outputHashing": "all",
-              "index": {
-                "input": "src/index.build.html",
-                "output": "index.html"
-              }
+              "baseHref": "/aoc22/"
             },
             "development": {
               "buildOptimizer": false,
