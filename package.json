@@ -25,6 +25,7 @@
     "css.gg": "^2.0.0",
     "modern-normalize": "^1.1.0",
     "rxjs": "~7.5.0",
+    "three": "^0.147.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },
@@ -32,6 +33,7 @@
     "@angular-devkit/build-angular": "^15.0.2",
     "@angular/cli": "~15.0.2",
     "@angular/compiler-cli": "^15.0.0",
+    "@types/three": "^0.146.0",
     "typescript": "~4.8.2"
   }
 }

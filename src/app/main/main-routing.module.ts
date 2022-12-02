@@ -25,6 +25,14 @@ const routes: Routes = [
             path: '01',
             loadChildren: () => import('../days/d01/d01.module').then(m => m.D01Module),
           },
+          {
+            path: '2',
+            redirectTo: '02',
+          },
+          {
+            path: '02',
+            loadChildren: () => import('../days/d02/d02.module').then(m => m.D02Module),
+          },
         ],
       },
     ],

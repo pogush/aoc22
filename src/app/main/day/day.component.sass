@@ -1,0 +1,12 @@
+@use "common"
+@use "variables"
+
+.canvas-wrapper
+  display: flex
+  align-items: center
+  justify-content: center
+  canvas
+    background: common.color('black', 'light')
+    +common.transition(width, height)
+    +common.box-shadow
+    +common.border-radius

@@ -1,0 +1,16 @@
+@use "common"
+
+\:host
+  margin: 1rem 2rem
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: center
+  gap: 1rem
+  +common.from(sm)
+    display: none
+
+a
+  text-transform: uppercase
+  font-size: .75rem
+  color: common.color('white', 'darkest')

@@ -1,4 +1,5 @@
 @use "common"
+@use "variables"
 
 \:host
   display: block
@@ -9,11 +10,24 @@
 .main-wrapper
   position: relative
   margin: 0 auto
-  width: 1200px
+  width: 100%
   min-height: 100vh
   display: flex
+  flex-direction: column
   justify-content: center
   align-items: stretch
+  +common.from(xs)
+    max-width: 90%
+  +common.from(sm)
+    max-width: 450px
+  +common.from(md)
+    max-width: 650px
+  +common.from(lg)
+    max-width: 800px
+  +common.from(xl)
+    max-width: 1000px
+  +common.from(xxl)
+    max-width: 1200px
   .side-label-title
     display: block
     position: absolute
@@ -30,6 +44,8 @@
       left: 1rem
       transform: translate(-100%, -100%) rotate(-88deg)
       background: common.color('green', 'light')
+    +common.until(sm)
+      display: none
   .side-label-github,
   .side-label-website
     display: block
@@ -41,6 +57,8 @@
     +common.border-radius
     +common.box-shadow
     +common.transition(transform, right, background)
+    +common.until(sm)
+      display: none
     &:hover
       right: 1rem
       transform: rotate(88deg)
@@ -58,8 +76,8 @@
     flex: 1
     position: relative
     background: common.color('black')
-    margin-top: 2rem
-    padding: 2rem
+    margin-top: variables.$main-spacing-top
+    padding: variables.$main-padding
     +common.border-radius
     +common.box-shadow
 

@@ -13,18 +13,19 @@ export class InputService {
     protected httpClient: HttpClient,
   ) {}
 
-  public get(day: Day, part: Part): Observable<string[]> {
+  public get(day: Day, part: Part, example: boolean = false): Observable<string[]> {
     return this.httpClient.get(
-      this.getInputUrl(day, part),
+      this.getInputUrl(day, part, example),
       {
         responseType: 'text'
       },
     ).pipe(
-      map(input => input.split('\n')),
+      map(input => input.split(/\r?\n/)),
     );
   }
 
-  protected getInputUrl(day: Day, part: Part): string {
-    return `/assets/input/d${day}p${part}.txt`;
+  protected getInputUrl(day: Day, part: Part, example: boolean = false): string {
+    let exampleExt = example ? '.example' : '';
+    return `/assets/input/d${day}p${part}${exampleExt}.txt`;
   }
 }

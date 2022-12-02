@@ -23,3 +23,33 @@
 
 =weight-bold
   font-weight: variables.$font-weight-bold
+
+=from($bp)
+  @media screen and (min-width: map-get(variables.$breakpoints, $bp))
+    @content
+
+=until($bp)
+  @media screen and (max-width: map-get(variables.$breakpoints, $bp) - 1px)
+    @content
+
+=only($bp)
+  @if $bp == xs
+    @media screen and (min-width: map-get(variables.$breakpoints, 'xs')) and (max-width: map-get(variables.$breakpoints, 'sm') - 1px)
+      @content
+  @else if $bp == sm
+    @media screen and (min-width: map-get(variables.$breakpoints, 'sm')) and (max-width: map-get(variables.$breakpoints, 'md') - 1px)
+      @content
+  @else if $bp == md
+    @media screen and (min-width: map-get(variables.$breakpoints, 'md')) and (max-width: map-get(variables.$breakpoints, 'lg') - 1px)
+      @content
+  @else if $bp == lg
+    @media screen and (min-width: map-get(variables.$breakpoints, 'lg')) and (max-width: map-get(variables.$breakpoints, 'xl') - 1px)
+      @content
+  @else if $bp == xl
+    @media screen and (min-width: map-get(variables.$breakpoints, 'xl')) and (max-width: map-get(variables.$breakpoints, 'xxl') - 1px)
+      @content
+  @else if $bp == xxl
+    +from(xxl)
+      @content
+  @else
+    @error "Unknown breakpoint #{$bp}."
