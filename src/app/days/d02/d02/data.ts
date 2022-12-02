@@ -49,7 +49,6 @@ export type Round = {
   outcome: Outcome;
   points: number;
 }
-
 export type FullRound = {
   part1: Round;
   part2: Round;
