@@ -60,7 +60,6 @@ export class EngineService implements OnDestroy {
       canvas: this.canvasService.canvas.nativeElement,
       alpha: false,
     });
-    this.rendererInternal.setPixelRatio(window.devicePixelRatio);
 
     this.start();
   }
