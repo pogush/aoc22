@@ -26,7 +26,7 @@ export class D01Component implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.inputService.get('01', '1').pipe(
+    this.inputService.get('01').pipe(
       tap(input => this.process(input)),
       tap(() => this.bootstrap()),
     ).subscribe();

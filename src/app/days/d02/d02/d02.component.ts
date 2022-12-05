@@ -38,7 +38,7 @@ export class D02Component implements AfterViewInit, OnDestroy  {
   }
 
   public ngAfterViewInit(): void {
-    this.inputService.get('02', '1').pipe(
+    this.inputService.get('02').pipe(
       tap(input => this.process(input)),
       tap(() => this.bootstrap()),
     ).subscribe();

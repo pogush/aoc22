@@ -6,8 +6,7 @@ import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-d03',
-  templateUrl: './d03.component.html',
-  styleUrls: ['./d03.component.sass']
+  template: ``,
 })
 export class D03Component implements AfterViewInit, OnDestroy {
 
@@ -26,7 +25,7 @@ export class D03Component implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.inputService.get('03', '1').pipe(
+    this.inputService.get('03').pipe(
       tap(input => this.process(input)),
       tap(input => this.process2(input)),
       // tap(() => this.bootstrap()),

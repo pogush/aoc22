@@ -15,9 +15,9 @@ export class InputService {
     protected platformLocation: PlatformLocation,
   ) {}
 
-  public get(day: Day, part: Part, example: boolean = false): Observable<string[]> {
+  public get(day: Day, example: boolean = false): Observable<string[]> {
     return this.httpClient.get(
-      this.getInputUrl(day, part, example),
+      this.getInputUrl(day, example),
       {
         responseType: 'text'
       },
@@ -26,8 +26,8 @@ export class InputService {
     );
   }
 
-  protected getInputUrl(day: Day, part: Part, example: boolean = false): string {
+  protected getInputUrl(day: Day, example: boolean = false): string {
     let exampleExt = example ? '.example' : '';
-    return `${this.platformLocation.getBaseHrefFromDOM()}assets/input/d${day}p${part}${exampleExt}.txt`;
+    return `${this.platformLocation.getBaseHrefFromDOM()}assets/input/d${day}${exampleExt}.txt`;
   }
 }
