@@ -65,6 +65,14 @@ const routes: Routes = [
             path: '06',
             loadChildren: () => import('../days/d06/d06.module').then(m => m.D06Module),
           },
+          {
+            path: '7',
+            redirectTo: '07',
+          },
+          {
+            path: '07',
+            loadChildren: () => import('../days/d07/d07.module').then(m => m.D07Module),
+          },
         ],
       },
     ],
