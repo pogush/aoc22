@@ -34,11 +34,11 @@ export class D09Component implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     let startTime: number;
-    this.inputService.get('09', true).pipe(
+    this.inputService.get('09').pipe(
       tap(() => {startTime = performance.now();}),
       tap(input => this.processInput(input)),
       tap(() => this.process(2)),
-      tap(() => this.process(9)),
+      tap(() => this.process(10)),
       tap(() => {console.log(`Took ${performance.now() - startTime}ms`);}),
     ).subscribe();
   }
@@ -74,40 +74,49 @@ export class D09Component implements AfterViewInit, OnDestroy {
         for (let i = 1; i < this.knots.length; i++) {
           const head = this.knots[i - 1];
           const tail = this.knots[i];
-          const distanceX = Math.abs(head[0] - tail[0]);
-          const distanceY = Math.abs(head[1] - tail[1]);
 
-          console.log(`looking at `, head, tail)
+          const diffX = head[0] - tail[0];
+          const diffY = head[1] - tail[1];
 
-          if (distanceX === 0 && distanceY === 0) { // same coord
-
-          } else if (distanceX > 0 && distanceY > 0) { // not same line
-            if (distanceX === 1) {
-              if (distanceY === 1) {
-                // diagonal
-              } else if (distanceY === 2) {
-                tail[1] += plusY;
-                tail[0] = head[0];
-              } else {
-                throw new Error();
-              }
-            } else if (distanceY === 1) {
-              if (distanceX === 1) {
-                // diagonal
-              } else if (distanceX === 2) {
-                tail[0] += plusX;
-                tail[1] = head[1];
-              } else {
-                throw new Error();
-              }
-            } else {
-              throw new Error();
+          if (diffX === 2) {
+            if (diffY === 1 || diffY === 2) {
+              tail[0] += 1;
+              tail[1] += 1;
+            } else if (diffY === 0) {
+              tail[0] += 1;
+            } else if (diffY === -1 || diffY === -2) {
+              tail[0] += 1;
+              tail[1] -= 1;
             }
-          } else { // same line
-            if (distanceX === 2) {
-              tail[0] += plusX;
-            } else if (distanceY === 2) {
-              tail[1] += plusY;
+          } else if (diffX === -2) {
+            if (diffY === 1 || diffY === 2) {
+              tail[0] -= 1;
+              tail[1] += 1;
+            } else if (diffY === 0) {
+              tail[0] -= 1;
+            } else if (diffY === -1 || diffY === -2) {
+              tail[0] -= 1;
+              tail[1] -= 1;
+            }
+          } else if (diffY === 2) {
+            if (diffX === 1) {
+              tail[0] += 1;
+              tail[1] += 1;
+            } else if (diffX === 0) {
+              tail[1] += 1;
+            } else if (diffX === -1) {
+              tail[0] -= 1;
+              tail[1] += 1;
+            }
+          } else if (diffY === -2) {
+            if (diffX === 1) {
+              tail[0] += 1;
+              tail[1] -= 1;
+            } else if (diffX === 0) {
+              tail[1] -= 1;
+            } else if (diffX === -1) {
+              tail[0] -= 1;
+              tail[1] -= 1;
             }
           }
         }
