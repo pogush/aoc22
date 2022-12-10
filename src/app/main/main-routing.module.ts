@@ -89,6 +89,10 @@ const routes: Routes = [
             path: '09',
             loadChildren: () => import('../days/d09/d09.module').then(m => m.D09Module),
           },
+          {
+            path: '10',
+            loadChildren: () => import('../days/d10/d10.module').then(m => m.D10Module),
+          },
         ],
       },
     ],
