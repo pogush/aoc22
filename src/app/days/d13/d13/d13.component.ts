@@ -15,6 +15,11 @@ export class D13Component implements AfterViewInit, OnDestroy {
 
   protected packetPairs: [Packet, Packet][] = [];
 
+  protected extraPackets: Packet[] = [
+    [[2]],
+    [[6]],
+  ];
+
   constructor(
     protected inputService: InputService,
     protected engineService: EngineService,
@@ -28,11 +33,11 @@ export class D13Component implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     let startTime: number;
-    this.inputService.get('13', true).pipe(
+    this.inputService.get('13').pipe(
       tap(() => {startTime = performance.now();}),
       tap(input => this.processInput(input)),
       tap(() => this.process()),
-      // tap(() => this.processPart2()),
+      tap(() => this.processPart2()),
       tap(() => {console.log(`Took ${performance.now() - startTime}ms`);}),
     ).subscribe();
   }
@@ -43,8 +48,8 @@ export class D13Component implements AfterViewInit, OnDestroy {
       if (line === '') continue;
       const nextLine = input[i + 1];
 
-      const left: Packet = JSON.parse(`"${line}"`);
-      const right: Packet = JSON.parse(`"${line}"`);
+      const left: Packet = JSON.parse(`${line}`);
+      const right: Packet = JSON.parse(`${nextLine}`);
       this.packetPairs.push([left, right]);
       i++;
     }
@@ -55,14 +60,26 @@ export class D13Component implements AfterViewInit, OnDestroy {
     for (let i = 0; i < this.packetPairs.length; i++) {
       const packetPair = this.packetPairs[i];
       const result = this.processPacketPair(packetPair[0], packetPair[1]);
-      console.log(i, result);
-      total += i+1
+      if (result === -1) {
+        total += i+1
+      }
     }
     console.log(total);
   }
 
+  protected processPart2(): void {
+    const packets: Packet[] = [...this.packetPairs.flat(), ...this.extraPackets];
+    packets.sort((left, right) => this.processPacketPair(left, right));
+
+    let total = 1;
+    for (const extraPacket of this.extraPackets) {
+      total *= packets.findIndex(p => p === extraPacket) + 1;
+    }
+
+    console.log(total);
+  }
+
   protected processPacketPair(left: PacketData, right: PacketData): -1|0|1 {
-    // console.log(left, right);
     if (!Array.isArray(right) && Array.isArray(left)) {
       return this.processPacketPair(left, [right]);
     }
@@ -71,22 +88,31 @@ export class D13Component implements AfterViewInit, OnDestroy {
     }
 
     if (Array.isArray(left) && Array.isArray(right)) {
-      if (right.length < left.length) return -1;
-      for (let i = 0; i < right.length; i++) {
+      let i = 0;
+      for (; i < left.length; i++) {
+        if (right.length <= i) {
+          return 1;
+        }
         const process = this.processPacketPair(left[i], right[i]);
-        if (process == -1) return -1;
-        if (process == 1) return 1;
+        if (process == 1) {
+          return 1;
+        }
+        if (process == -1) {
+          return -1;
+        }
       }
+
+      if (right.length > i) return -1;
 
       return 0;
     }
 
     if (left < right) {
-      return 1;
+      return -1;
     }
 
     if (left > right) {
-      return -1;
+      return 1;
     }
 
     return 0;
