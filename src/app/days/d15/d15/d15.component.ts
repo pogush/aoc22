@@ -26,7 +26,8 @@ class Sensor {
   }
 
   public getFreeXs(y: number): [number, number] | null {
-    const minDistance = Math.abs(this.position.y - y);
+    let minDistance = this.position.y - y;
+    minDistance = minDistance >= 0 ? minDistance : -minDistance;
     const maxDistance = this.range - minDistance;
     if (maxDistance < 0) return null;
 
@@ -62,6 +63,7 @@ export class D15Component implements AfterViewInit, OnDestroy {
       tap(() => {startTime = performance.now();}),
       tap(input => this.processInput(input)),
       tap(() => this.process()),
+      tap(() => this.process2()),
       tap(() => {console.log(`Took ${performance.now() - startTime}ms`);}),
     ).subscribe();
   }
@@ -96,8 +98,10 @@ export class D15Component implements AfterViewInit, OnDestroy {
         beaconsOnLine.add(sensor.beaconPosition.toString());
       }
     }
-    ranges.sort((a, b) => a[1] - b[1]);
-    ranges.sort((a, b) => a[0] - b[0]);
+    ranges.sort((a, b) => {
+      if (a[0] == b[0]) return a[1] - b[1];
+      return a[0] - b[0];
+    });
 
     const xRangeStack: [number, number][] = [];
 
@@ -120,6 +124,51 @@ export class D15Component implements AfterViewInit, OnDestroy {
 
     const result = xRangeStack.reduce((acc, [start, end]) => Math.abs(end - start) + acc + 1, 0) - beaconsOnLine.size;
 
-    console.log(result);
+    console.log('Part1', result);
+  }
+
+  protected process2(): void {
+    const range: number = 4000000;
+    for (let y = 0; y <= range; y++) {
+      const ranges: [number, number][] = [];
+      for (const sensor of this.sensors) {
+        const range = sensor.getFreeXs(y);
+        if (range === null) continue;
+
+        ranges.push(range);
+      }
+      ranges.sort((a, b) => {
+        if (a[0] == b[0]) return a[1] - b[1];
+        return a[0] - b[0];
+      });
+
+      const xRangeStack: [number, number][] = [];
+
+      for (const range of ranges) {
+        if (xRangeStack.length === 0) {
+          xRangeStack.push(range);
+          continue;
+        }
+
+        if (range[0] > xRangeStack[xRangeStack.length - 1][1] + 1) {
+          xRangeStack.push(range);
+          continue;
+        }
+
+        const topOfStack = xRangeStack.pop();
+        if (topOfStack === undefined) throw new Error();
+        topOfStack[1] = Math.max(range[1], topOfStack[1]);
+        xRangeStack.push(topOfStack);
+      }
+      let x = 0;
+      for (const xRangeStackElement of xRangeStack) {
+        if (xRangeStackElement[0] > x) {
+          console.log('Part2', x * 4000000 + y);
+          return;
+        }
+        if (xRangeStackElement[1] < x) continue;
+        x = xRangeStackElement[1] + 1;
+      }
+    }
   }
 }

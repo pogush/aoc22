@@ -198,11 +198,11 @@ export class D14Component implements AfterViewInit, OnDestroy {
 
   protected process(): void {
     const resultPart1 = this.cave.simulatePart1();
-    console.log(resultPart1);
+    console.log('Part1', resultPart1);
 
     this.cave.resetSands();
 
     const resultPart2 = this.cave.simulatePart2();
-    console.log(resultPart2);
+    console.log('Part2', resultPart2);
   }
 }
