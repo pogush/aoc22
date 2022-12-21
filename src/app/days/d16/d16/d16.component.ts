@@ -13,7 +13,7 @@ type Valve = {
   id: string;
   rate: number;
   connections: Connection[];
-  cache: [number, string, number][];
+  cache: Map<[number, string], number>;
 }
 
 @Component({
@@ -41,7 +41,7 @@ export class D16Component implements AfterViewInit, OnDestroy {
       tap(() => {startTime = performance.now();}),
       tap(input => this.processInput(input)),
       tap(() => this.process()),
-      // tap(() => this.process2()),
+      tap(() => this.process2()),
       tap(() => {console.log(`Took ${performance.now() - startTime}ms`);}),
     ).subscribe();
   }
@@ -59,7 +59,7 @@ export class D16Component implements AfterViewInit, OnDestroy {
           to: id,
           cost: 1,
         })),
-        cache: [],
+        cache: new Map<[number, string], number>(),
       });
     }
 
@@ -106,14 +106,21 @@ export class D16Component implements AfterViewInit, OnDestroy {
     console.log(result);
   }
 
+  protected process2(): void {
+    this.valves.forEach(v => v.cache.clear());
+    const ids = this.valves.map(v => v.id);
+    // const permutations = permute();
+    console.log(ids);
+  }
+
   protected traverse(currentValveId: string, remainingTime: number, openedValves: string[]): number {
     let maxPressure = 0;
     let valve = this.valves.find(v => v.id === currentValveId);
     if (valve === undefined) throw new Error();
 
-    // const cachedOpenedValves = openedValves.join('');
-    // const cachedValue = valve.cache.find(([t, o, r]) => t === remainingTime && o === cachedOpenedValves);
-    // if (cachedValue !== undefined) return cachedValue[2];
+    const cachedOpenedValves = openedValves.join('');
+    const cachedValue = valve.cache.get([remainingTime, cachedOpenedValves]);
+    if (cachedValue !== undefined) return cachedValue;
 
     for (const connection of valve.connections) {
       if (openedValves.includes(connection.to)) continue;
@@ -125,8 +132,30 @@ export class D16Component implements AfterViewInit, OnDestroy {
       maxPressure = Math.max(maxPressure, traverseResult);
     }
 
-    // console.log([remainingTime, cachedOpenedValves, maxPressure]);
-    // valve.cache.push([remainingTime, cachedOpenedValves, maxPressure]);
+    valve.cache.set([remainingTime, cachedOpenedValves], maxPressure);
+    return maxPressure;
+  }
+
+  protected traverse2(currentValveId: string, remainingTime: number, openedValves: string[]): number {
+    let maxPressure = 0;
+    let valve = this.valves.find(v => v.id === currentValveId);
+    if (valve === undefined) throw new Error();
+
+    const cachedOpenedValves = openedValves.join('');
+    const cachedValue = valve.cache.get([remainingTime, cachedOpenedValves]);
+    if (cachedValue !== undefined) return cachedValue;
+
+    for (const connection of valve.connections) {
+      if (openedValves.includes(connection.to)) continue;
+      const newRemainingTime = remainingTime - (connection.cost + 1);
+      if (remainingTime <= 0) continue;
+      const connectedValve = this.valves.find(v => v.id === connection.to);
+      if (connectedValve === undefined) throw new Error();
+      const traverseResult = this.traverse(connectedValve.id, newRemainingTime, [...openedValves, connectedValve.id].sort()) + connectedValve.rate * newRemainingTime;
+      maxPressure = Math.max(maxPressure, traverseResult);
+    }
+
+    valve.cache.set([remainingTime, cachedOpenedValves], maxPressure);
     return maxPressure;
   }
 }
