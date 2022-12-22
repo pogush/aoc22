@@ -144,12 +144,13 @@ export class D15Component implements AfterViewInit, OnDestroy {
 
       const xRangeStack: [number, number][] = [];
 
-      for (const range of ranges) {
-        if (xRangeStack.length === 0) {
-          xRangeStack.push(range);
-          continue;
-        }
+      const firstRange = ranges.shift();
+      if (firstRange === undefined) {
+        continue;
+      }
+      xRangeStack.push(firstRange);
 
+      for (const range of ranges) {
         if (range[0] > xRangeStack[xRangeStack.length - 1][1] + 1) {
           xRangeStack.push(range);
           continue;
