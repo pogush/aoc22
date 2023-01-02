@@ -117,6 +117,10 @@ const routes: Routes = [
             path: '16',
             loadChildren: () => import('../days/d16/d16.module').then(m => m.D16Module),
           },
+          {
+            path: '17',
+            loadChildren: () => import('../days/d17/d17.module').then(m => m.D17Module),
+          },
         ],
       },
     ],
