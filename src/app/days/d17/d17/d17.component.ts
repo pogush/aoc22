@@ -89,7 +89,7 @@ export class D17Component implements AfterViewInit, OnDestroy {
       tap(() => this.processPieces(PIECES)),
       tap(input => this.processInput(input)),
       tap(() => this.process(2022)),
-      tap(() => this.process(1000000)),
+      tap(() => this.process(1000000000000)),
       tap(() => {
         console.log(`Took ${performance.now() - startTime}ms`);
       }),
@@ -125,13 +125,19 @@ export class D17Component implements AfterViewInit, OnDestroy {
   }
 
   protected process(iterations: number): void {
+    // Reset
     let movementIndex = 0;
     let pieceIndex = 0;
-    const patterns: [number, number, number][] = [];
+    let skipped = 0;
+    this.lines.clear();
+    this.floor = -1;
+    this.highestY = -1;
+    // movementIndex, pieceIndex, i, height
+    const patterns: [number, number, number, number][] = [];
+    let patternFound = false;
+
     for (let i = 0; i < iterations; i++) {
-      if (i % 1000000 === 0) {
-        console.log(i);
-      }
+
       // get piece
       const piece = this.pieces[pieceIndex++];
       if (pieceIndex >= this.pieces.length) {
@@ -161,7 +167,7 @@ export class D17Component implements AfterViewInit, OnDestroy {
       }
 
       // add blocks
-      let patternFound = false;
+      let newFloorFound = false;
       for (const block of piece.blocks) {
         const blockX = x + block.x;
         const blockY = y + block.y;
@@ -180,33 +186,33 @@ export class D17Component implements AfterViewInit, OnDestroy {
         }
 
         if (line.size === 7) {
+          newFloorFound = true;
           this.floor = blockY;
-          //console.log('new floor at', this.floor, movementIndex, pieceIndex);
 
           for (const lineY of this.lines.keys()) {
             if (lineY <= this.floor) {
               this.lines.delete(lineY);
             }
           }
-
-          if (patternFound) continue;
-
-          const pattern = patterns.find(p => p[0] === movementIndex && p[1] === pieceIndex);
-          if (pattern !== undefined) {
-            patternFound = true;
-            console.log('pattern found', pattern);
-            console.log('current i', i);
-            console.log('length', i - pattern[2]);
-          } else {
-            patterns.push([movementIndex, pieceIndex, i]);
-          }
         }
       }
 
-      if (patternFound) break;
+      if (patternFound || !newFloorFound) continue;
+
+      const pattern = patterns.find(p => p[0] === movementIndex && p[1] === pieceIndex);
+      if (pattern !== undefined) {
+        patternFound = true;
+        const patternLength = i - pattern[2];
+        const remaining = iterations - i;
+        const cycles = Math.floor(remaining / patternLength);
+        i += (cycles * patternLength);
+        skipped = cycles * (this.highestY - pattern[3]);
+      } else {
+        patterns.push([movementIndex, pieceIndex, i, this.highestY]);
+      }
     }
 
-    console.log(this.highestY + 1);
+    console.log(this.highestY + skipped + 1);
   }
 
   protected canMove(x: number, y: number, piece: Piece, movement: Direction): boolean {
